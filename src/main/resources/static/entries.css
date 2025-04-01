@@ -1,0 +1,138 @@
+body {
+    background-color: #01011e;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    width: 80vw;
+    padding-top: 5vh;
+    margin: auto;
+
+}
+
+.content-right {
+    box-sizing: border-box;
+    text-align: right;
+    width: 100%;
+    padding-bottom: 10px;
+}
+
+.table {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: 1fr;
+    text-align: center;
+    width: 80vw;
+}
+
+.grid-header {
+    background-color: #8e44ed;
+    color: white;
+    font-weight: bolder;
+    padding: 10px;
+}
+
+.grid-header:first-child {
+    border-top-left-radius: 10px;
+}
+
+.grid-header:nth-child(5) {
+    border-top-right-radius: 10px;
+}
+
+.grid-item {
+    padding: 10px;
+}
+
+.grid-item:nth-last-child(5) {
+    border-bottom-left-radius: 10px;
+}
+
+.grid-item:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.grid-item:nth-child(10n+1),
+.grid-item:nth-child(10n+2),
+.grid-item:nth-child(10n+3),
+.grid-item:nth-child(10n+4),
+.grid-item:nth-child(10n+5) {
+    background-color: #395bed;
+    color: #c0c0ef;
+}
+
+.grid-item:nth-child(10n+6),
+.grid-item:nth-child(10n+7),
+.grid-item:nth-child(10n+8),
+.grid-item:nth-child(10n+9),
+.grid-item:nth-child(10n+10) {
+    background-color: #213faa;
+    color: white;
+}
+
+.button-edit {
+    text-decoration: none;
+    padding: 5px 20px;
+    border-radius: 5px;
+    background-color: #13600f;
+    color: white;
+}
+
+.button-edit-small {
+    width: 50px;
+}
+
+.button-edit:hover {
+    cursor: pointer;
+    background-color: white;
+    color:  #13600f
+
+}
+
+.button-edit:active {
+    background-color: #075912;
+    color: white;
+}
+
+.button-delete-form {
+    display: inline;
+}
+
+.button-delete {
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #c1084f;
+    color: white;
+}
+
+.button-delete:hover {
+    cursor: pointer;
+    background-color: white;
+    color: #c1084f
+
+}
+
+.button-delete:active {
+    background-color: #5a0716;
+    color: white;
+}
+
+.no-entries {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    border: 1px solid #a469ea;
+    color: white;
+    width: 80vw;
+    text-align: center;
+    padding: 50px;
+    border-radius: 20px;
+    font-weight: bolder;
+    font-size: 20px;
+}

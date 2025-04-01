@@ -1,0 +1,134 @@
+body {
+    background-color: #01011e;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    width: 80vw;
+    padding-top: 1vh;
+    margin: auto;
+    gap: 10px;
+
+}
+
+.table {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: 1fr;
+    text-align: center;
+    width: 90vw;
+}
+
+.grid-header {
+    background-color: #8e44ed;
+    color: white;
+    font-weight: bolder;
+    padding: 10px;
+}
+
+.grid-header:first-child {
+    border-top-left-radius: 10px;
+}
+
+.grid-header:nth-child(6) {
+    border-top-right-radius: 10px;
+}
+
+.grid-item {
+    padding: 10px;
+}
+
+.grid-item:nth-last-child(6) {
+    border-bottom-left-radius: 10px;
+}
+
+.grid-item:last-child {
+    border-bottom-right-radius: 10px;
+}
+
+.grid-item:nth-child(12n+1),
+.grid-item:nth-child(12n+2),
+.grid-item:nth-child(12n+3),
+.grid-item:nth-child(12n+4),
+.grid-item:nth-child(12n+5),
+.grid-item:nth-child(12n+6){
+    background-color: #2f3575;
+    color: #e1d4d4;
+}
+
+.grid-item:nth-child(12n+7),
+.grid-item:nth-child(12n+8),
+.grid-item:nth-child(12n+9),
+.grid-item:nth-child(12n+10),
+.grid-item:nth-child(12n+11),
+.grid-item:nth-child(12n+12){
+    background-color: #1e337a;
+    color: white;
+}
+
+.no-entries {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    border: 1px solid #a469ea;
+    color: white;
+    width: 80vw;
+    text-align: center;
+    padding: 50px;
+    border-radius: 20px;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+.statistics{
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.statistic-title{
+    font-size: 12px;
+    color:white;
+}
+
+.statistics div:nth-child(2){
+    margin-left: 5px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.statistics div:last-child{
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.statistic-create {
+    background-color: #075912;
+    color: white;
+    padding: 10px;
+}
+
+.statistic-update {
+    background-color: #9a8405;
+    color: white;
+    padding: 10px;
+}
+
+.statistic-delete {
+    background-color: #c1084f;
+    color: white;
+    padding: 10px;
+}
+
+.statistic-item {
+    background-color: white;
+    color: black;
+    padding: 10px;
+}

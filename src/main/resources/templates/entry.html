@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/entry.css}" rel="stylesheet">
+    <link th:href="@{/navbar.css}" rel="stylesheet">
+    <title>Entry</title>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="container">
+    <form class="form" th:object="${entry}" th:action="@{/handleform}" method="post">
+        <input type="hidden" name="id" th:field="*{id}"/>
+        <div class="title center">Diary Entry</div>
+        <div>
+            <div class="label">Name</div>
+            <div>
+                <p style="color:red" th:errors="*{name}"></p>
+                <input class="input" type="text" id="name" th:field="*{name}" placeholder="name..."/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="label">Description</div>
+            <div>
+                <p style="color:red" th:errors="*{description}"></p>
+                <textarea class="input" id="description" th:field="*{description}"
+                          placeholder="write your description...">
+
+                </textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="label">Time</div>
+            <!-- we use # instead of * because we are calling a function not accessing the model attribute directly.
+                  be able to execute thymeleaf utility function temporals we need to use $-->
+            <div class="readonly-label" th:text="${#temporals.format(entry.dateTime, 'yyyy-MM-dd HH:mm')}">
+            </div>
+        </div>
+        <div class="row center">
+            <div><button class="button">Save</button></div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

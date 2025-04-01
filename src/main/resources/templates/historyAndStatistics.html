@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/historyAndStatistics.css}" rel="stylesheet">
+    <link th:href="@{/navbar.css}" rel="stylesheet">
+    <title>Entries</title>
+</head>
+<body>
+<div th:replace="navbar :: navbar"></div>
+<div class="container">
+    <div class="statistics" th:object="${statistic}">
+        <div class="statistic-title">Operations</div>
+        <div class="statistic-create">Create</div>
+        <div class="statistic-item" th:text="${statistic.created}"></div>
+        <div class="statistic-update">Update</div>
+        <div class="statistic-item" th:text="${statistic.updated}"></div>
+        <div class="statistic-delete">Delete</div>
+        <div class="statistic-item" th:text="${statistic.deleted}"></div>
+    </div>
+
+    <th:block th:if="${not #lists.isEmpty(histories)}">
+        <div class="table">
+            <div class="grid-header">DateTime</div>
+            <div class="grid-header">Operation</div>
+            <div class="grid-header">Exec Nano Seconds</div>
+            <div class="grid-header">Message</div>
+            <div class="grid-header">Prev Value</div>
+            <div class="grid-header">New Value</div>
+
+            <th:block th:each="history : ${histories}">
+                <div class="grid-item" th:text="${#temporals.format(history.dateTime, 'yyyy-MM-dd HH:mm')}"></div>
+                <div class="grid-item" th:text="${history.operation}"></div>
+                <div class="grid-item" th:text="${history.nsTaken}"></div>
+                <div class="grid-item" th:text="${history.message}"></div>
+                <div class="grid-item" th:text="${history.previousValue}"></div>
+                <div class="grid-item" th:text="${history.newValue}"></div>
+            </th:block>
+        </div>
+    </th:block>
+    <div class="no-entries" th:if="${#lists.isEmpty(histories)}">
+        No histories entries
+    </div>
+</div>
+</body>
+</html>
