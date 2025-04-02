@@ -125,7 +125,7 @@ Now that you have you _Aspect_ with all the methods containing the _cross-cuttin
 We can create _Advices_ with _Point Cut_ on the same place by annotating our _Aspect Methods_ with the selected _Advice_ plus de _Point Cut_ definition.
 
 ```
-  //As an example we select the @Around Advice
+  //As an example we select the @Around Advice for logging updates operations.
   
   @Around("within(com.reailize.AOPDemo.Service.DiaryService) && @annotation(com.reailize.AOPDemo.Annotation.UpdateEntry)")
   public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
@@ -172,7 +172,7 @@ So for this purpose is better to create the _Point Cuts_ as reusable functions i
 Then we can reference them by qualified name in the _Advice_ definition like this.
 
 ```
-    //Using the previous Advice @Around
+    //Using the previous Advice @Around for logging updates operations.
      @Around("com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceUpdateMethod()")
     public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
 
@@ -182,6 +182,31 @@ Then we can reference them by qualified name in the _Advice_ definition like thi
 
 Implement the logic of each method in the _Aspect_ class according to the type of Advise selected. This is the code that will be trigger
 on the set of _Join Point_ that our _Point_ Cuts fill filter.
+
+```
+    //Adding the logic to our previous method for loggin udpates operations
+    
+    @Around("com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceUpdateMethod()")
+    public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        String operation = proceedingJoinPoint.getSignature().getName();
+
+        Entry entry = (Entry) proceedingJoinPoint.getArgs()[0];
+        String prevEntry = diaryService.getEntry(entry.getId()).toString();
+
+        long startTime = System.nanoTime();
+
+        Object returnValue = proceedingJoinPoint.proceed();
+
+        long endTime = System.nanoTime(); // End time
+        long executionTime = (endTime - startTime) / 1_000_000;
+
+        History history = createHistoryRecord(operation, executionTime, prevEntry, returnValue.toString(), null);
+
+        historyService.createHistory(history);
+
+        return returnValue;
+    }
+```
 
 
 ## Spring AOP Reference
