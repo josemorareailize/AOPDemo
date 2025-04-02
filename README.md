@@ -75,3 +75,151 @@ Using above _pointcuts_ to filter where to apply the advice. We have the followi
 6. **@AfterThrowing(pointcut = "com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceReadMethodExecution()", throwing = "ex"):** Capture any exception thrown during Read operations on [DiaryService](https://github.com/jiujitsuboy/SpringAOP/blob/master/AOPDemo/src/main/java/com/reailize/AOPDemo/Service/DiaryService.java) service.
 7. **@AfterReturning("com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceWithParameterLong()"):** Increase the statistic counter for delete operation on [DiaryService](https://github.com/jiujitsuboy/SpringAOP/blob/master/AOPDemo/src/main/java/com/reailize/AOPDemo/Service/DiaryService.java) service.
 8. **@After("com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceCreateMethod() || com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceUpdateMethod()"):** Increase the statistic counter for create or update operation on [DiaryService](https://github.com/jiujitsuboy/SpringAOP/blob/master/AOPDemo/src/main/java/com/reailize/AOPDemo/Service/DiaryService.java) service.
+
+## Spring AOP Receipt
+
+The idea of this demo was to put in practice the majority of the Spring AOP concepts, but obviously not all was cover here. Following we can see a receipt of how to create a cross-cutting concern using AOP.
+
+### Step 1
+
+Define you _cross-cutting concern_. This mean, define what is the logic you want to apply by implementing a set of _Aspects_. Following the topic of this demo, our cross-cutting concern is _logging user operations_.
+
+Your _cross-cutting concern_ will be encapsulated in a class annotated with **@Aspect**.
+
+```
+@Aspect
+@Component
+public class Logging {}
+
+```
+
+### Step 2
+
+Once you have the _cross-cutting concern_ (your Aspect or set of Aspects) is time to define what are the operations this _Aspect_ will have.
+Following the topic of this demo, we are interested in logging CRUD operations by recording the execution time and any model parameters.
+
+```
+    public Object logExecutionTimeForReadOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+
+    public Object logExecutionTimeForCreateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+
+    public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+    
+    public Object logExecutionTimeForDeleteOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+
+    public void verifyTypeOfOperationToPerformOnHandleForm(JoinPoint joinPoint) {}
+
+    public void expectationOnReadOperation(JoinPoint joinPoint, RuntimeException ex) {}
+    
+    public void verifyTypeOfOperationToPerformOnWithParameterLong(JoinPoint joinPoint) {}
+
+    public void countModificationOperations(JoinPoint joinPoint) {}
+```
+### Step 3
+
+Now that you have you _Aspect_ with all the methods containing the _cross-cutting concern_ is it time to define two things:
+
+1. The filter (_Point Cut_) to hook our Aspect methods to the **join point** where we want to apply the logic.
+2. In want moment of the request, we want to apply the logic (our _Advice_).
+
+We can create _Advices_ with _Point Cut_ on the same place by annotating our _Aspect Methods_ with the selected _Advice_ plus de _Point Cut_ definition.
+
+```
+  //As an example we select the @Around Advice
+  
+  @Around("within(com.reailize.AOPDemo.Service.DiaryService) && @annotation(com.reailize.AOPDemo.Annotation.UpdateEntry)")
+  public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+```
+
+As you may tell, is a lot of sintax to define the _Point Cut_ and following this approach, if we need to reuse any of the _Point Cut definition_, will need to duplicate the statement.
+So for this purpose is better to create the _Point Cuts_ as reusable functions in another class.
+
+```
+   public class LoggingPointCut {
+
+    //Get all method from DiaryService
+    @Pointcut("within(com.reailize.AOPDemo.Service.DiaryService)")
+    public void diaryServiceMethodExecution() {}
+
+    //Get create, update and delete methods from DiaryService
+    @Pointcut("within(com.reailize.AOPDemo.Service.DiaryService) && !execution(* com.reailize.AOPDemo.Service.DiaryService.get*(..))")
+    public void diaryServiceModifyExecution() {}
+
+    //Get all read methods (getEntries, getEntry) from DiaryService
+    @Pointcut("diaryServiceMethodExecution() && execution(* com.reailize.AOPDemo.Service.DiaryService.get*(..))")
+    public void diaryServiceReadMethodExecution() {}
+
+    //Get handleForm endpoint from DiaryController
+    @Pointcut("execution(* com.reailize.AOPDemo.Controller.DiaryController.handleForm(..))")
+    public void diaryControllerMethod() {}
+
+    //Get createEntry from DiaryService
+    @Pointcut("diaryServiceMethodExecution() && " +
+            "@annotation(com.reailize.AOPDemo.Annotation.CreateEntry)")
+    public void diaryServiceCreateMethod() {}
+
+    //Get updateEntry from DiaryService
+    @Pointcut("diaryServiceMethodExecution() && " +
+            "@annotation(com.reailize.AOPDemo.Annotation.UpdateEntry)")
+    public void diaryServiceUpdateMethod() {}
+
+    //Get DeleteEntry from  DiaryService
+    @Pointcut("diaryServiceModifyExecution() && args(Long)")
+    public void diaryServiceWithParameterLong(){}
+}
+```
+
+Then we can reference them by qualified name in the _Advice_ definition like this.
+
+```
+    //Using the previous Advice @Around
+     @Around("com.reailize.AOPDemo.PointCut.LoggingPointCut.diaryServiceUpdateMethod()")
+    public Object logExecutionTimeFoUpdateOperations(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {}
+
+```
+
+### Step 4
+
+Implement the logic of each method in the _Aspect_ class according to the type of Advise selected. This is the code that will be trigger
+on the set of _Join Point_ that our _Point_ Cuts fill filter.
+
+
+## Spring AOP Reference
+
+Here is the list of Supported **Pointcut Designators**:
+
+- **execution:** Is the most commonly used one. It matches method executions based on the method signature..
+
+- **within:**  Limits matching to methods within a specific type (class) or package.
+
+- **this:** Is used to match proxy objects (Spring-managed beans) that implement a specific interface.
+
+- **target:** Is similar to this, but it matches based on the actual target object (not just the proxy).
+
+- **args:**  Matches methods based on the runtime arguments passed to them.
+
+- **@target:** Is similar to @within, but it considers only the target object.
+
+- **@args:**  Matches methods where the runtime arguments are annotated with a specific annotation.
+
+- **@within:** Matches all methods within classes annotated with a specific annotation.
+
+- **@annotation:** Matches methods that are directly annotated with a specific annotation.
+
+_Point Cuts_ can be combined using the following operators:
+
+1. && (AND)
+2. || (OR)
+3. ! (NOT)
+
+For more information visite [Spring Pointcuts](https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html)
+
+Here is the list of Supported **Advises**
+
+- **Before**: Executes before the target method is invoked.
+- **AfterReturning**: Executes after the target method completes successfully (i.e., without throwing an exception).
+- **AfterThrowing**: Executes if the target method throws an exception.
+- **After**: Executes after the target method has finished, regardless of its outcome (whether it returned normally or threw an exception).
+- **Around**: Surrounds the target method invocation, meaning it runs both before and after the method execution.
+
+For more information visite [Spring Advises](https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/advice.html)
